@@ -6,4 +6,5 @@ const ContentTypeScheema = new Schema<ContentType>({
   description: { type: String, required: true },
 });
 
+export { ContentTypeScheema };
 export default mongoose.model("ContentType", ContentTypeScheema);

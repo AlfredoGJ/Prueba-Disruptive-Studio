@@ -5,20 +5,35 @@ import mongoose from "mongoose";
 import { HTTP400BadRequest } from "infra/http/responses";
 
 export const modelValidator = <T>(model: mongoose.Model<T>) => {
-  return (req: Request, res: Response, next: express.NextFunction) => {
+  return (
+    req: Request & { file: { buffer; mimetype } },
+    res: Response,
+    next: express.NextFunction
+  ) => {
     var body = req.body;
+
+    console.log("Rersquest", req);
 
     switch (model.modelName) {
       case "Topic":
-        let topic = new model(body);
+        let topicData = {
+          name: body.name,
+          cover: {
+            data: req.file.buffer,
+            contentType: req.file.mimetype,
+          },
+          allowedContent: body.allowedContent,
+        };
+        const topic = new model(topicData);
+        console.log("Model", topic);
         model
           .validate(topic)
           .then((value) => {
             req.body.topic = topic;
-            return next();
+            next();
           })
           .catch((reason) => {
-            return HTTP400BadRequest(res, reason);
+            HTTP400BadRequest(res, reason);
           });
         break;
       case "User":
