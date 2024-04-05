@@ -24,8 +24,8 @@ export class MongoDbUserRepository implements IUserRepository {
   getUserByName(name: string): User {
     throw new Error("Method not implemented.");
   }
-  getUserByEmail(email: string): User {
-    throw new Error("Method not implemented.");
+  async getUserByEmail(email: string): Promise<User> {
+    return this._repo.findOne({ email: email });
   }
   createUser(user: User): void {
     this._repo.create(user);

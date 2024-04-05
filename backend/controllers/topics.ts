@@ -10,9 +10,10 @@ import { modelValidator } from "middleware/validation";
 import topicScheema from "infra/db/scheemas/topic";
 import { ITopicRepository } from "repositories/interfaces/ITopicRepository";
 import multer = require("multer");
+import { Authx } from "middleware/AuthX";
+import { UserType } from "domain/models";
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
 export const TopicsController = (
   options: RouterOptions,
   topicsRepository: ITopicRepository
@@ -25,13 +26,14 @@ export const TopicsController = (
     })
     .post(
       "/",
+      Authx([UserType.ADMIN]),
       upload.single("cover"),
       modelValidator(topicScheema),
-      async (req: Request, res: Response) => {
+      async (req: Request & { user }, res: Response) => {
         const { topic } = req.body;
         console.error("I Entered the controller :S");
         const existTopic = await topicsRepository.existTopic(topic.name);
-
+        console.log("USER", req.user);
         if (existTopic)
           return HTTP400BadRequest(res, "The email already exists.");
 

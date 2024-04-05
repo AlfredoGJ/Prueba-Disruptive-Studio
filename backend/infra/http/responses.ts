@@ -16,9 +16,14 @@ const HTTP201Created = (res: Response, resource: any) => {
   return res.status(201).json(resource);
 };
 
+const HTTP401Unauthorized = (res: Response, error: any) => {
+  return res.status(401).json({ error });
+};
+
 export {
   HTTP200Ok,
   HTTP201Created,
   HTTP400BadRequest,
   HTTP500InternalServerError,
+  HTTP401Unauthorized,
 };
