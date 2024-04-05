@@ -6,4 +6,6 @@ export interface IUserRepository {
   getUserByEmail(email: string): User;
   createUser(user: User): void;
   getAll(): Promise<User[]>;
+  existUser(user:User):Promise<Boolean>;
+//   validateUser(user:user):Promise<>
 }

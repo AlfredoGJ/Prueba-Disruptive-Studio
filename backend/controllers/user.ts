@@ -1,6 +1,9 @@
 import { Request, Response, RouterOptions } from "express";
 import { IUserRepository } from "../repositories/interfaces/IUserRepository";
 import express = require("express");
+import { HTTP200Ok, HTTP201Created } from "infra/http/responses";
+import { modelValidator } from "middleware/validation";
+import user from "infra/db/scheemas/user";
 
 export const UsersController = (
   options: RouterOptions,
@@ -12,12 +15,12 @@ export const UsersController = (
       console.log(options);
       console.log(usersService);
       const users = await usersService.getAll();
-      res.json(users);
+      return HTTP200Ok(res, users);
     })
-    .post("/", async (req: Request, res: Response) => {
-      const user  = req.body;
+    .post("/", modelValidator(user), async (req: Request, res: Response) => {
+      const { user } = req.body;
 
       usersService.createUser(user);
-      res.json(user)
+      return HTTP201Created(res, user);
     });
 };

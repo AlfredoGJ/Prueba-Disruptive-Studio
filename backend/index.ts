@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import { UsersController } from "controllers/user";
 
 import user from "infra/db/scheemas/user";
+import { modelValidator } from "middleware/validation";
 
 function start() {
   connectDatabase();

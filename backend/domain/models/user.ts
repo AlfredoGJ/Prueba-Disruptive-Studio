@@ -1,4 +1,8 @@
-type UserType = "ADMIN" | "VIEWER" | "CREATOR";
+enum UserType {
+  ADMIN = "ADMIN",
+  VIEWER = "VIEWER",
+  CREATOR = "CREATOR",
+}
 
 export interface User {
   name: string;
@@ -6,4 +10,4 @@ export interface User {
   type: UserType;
 }
 
-export type { UserType };
+export { UserType };
