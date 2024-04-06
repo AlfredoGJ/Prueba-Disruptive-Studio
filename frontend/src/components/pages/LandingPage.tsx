@@ -1,17 +1,25 @@
-import React from 'react';
+import React from "react";
+import { Banner } from "../organisms/Banner";
+import { MediaCountList } from "../organisms/MediaCount";
+import { ContentType } from "../../types/types";
 
-interface LandingPageProps {
-    title: string;
-    description: string;
+interface ILandingPageProps {
+  title: string;
+  subtitle: string;
+  description?: string;
+  mediaCount: ContentType[];
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ title, description }) => {
-    return (
-        <div>
-            <h1>{title}</h1>
-            <p>{description}</p>
-        </div>
-    );
+export const LandingPage: React.FC<ILandingPageProps> = ({
+  title,
+  description,
+  subtitle,
+  mediaCount,
+}) => {
+  return (
+    <main className="">
+      <Banner title={title} subtitle={subtitle} description={description} />
+      <MediaCountList mediaCount={mediaCount} />
+    </main>
+  );
 };
-
-export default LandingPage;
