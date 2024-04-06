@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import connectDatabase from "infra/db/connect";
 import express = require("express");
+import cors = require("cors");
 import { MongoDbUserRepository } from "repositories/mongodbUserRepository";
 import { UsersController } from "controllers/users";
 
@@ -16,15 +17,19 @@ function start() {
   const userRepository = new MongoDbUserRepository(userScheema);
   const topicsRepository = new MongoDbTopicRepository(topicScheema);
   const api = express();
-  
+
   const usersController = UsersController({}, userRepository);
   const topicsController = TopicsController({}, topicsRepository);
-  const authController = AuthController({}, userRepository)
+  const authController = AuthController({}, userRepository);
   api.use(express.json());
-  api.use("/auth", authController)
+  api.use("/auth", authController);
   api.use("/users", usersController);
   api.use("/topics", topicsController);
-  api.listen(process.env.PORT, () => {
+  const app = express();
+
+  app.use(cors({origin: "*"}));
+  app.use("/api", api);
+  app.listen(process.env.PORT, () => {
     console.info(`Api running in port ${process.env.PORT}`);
   });
 }
