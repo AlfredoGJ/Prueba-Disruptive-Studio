@@ -6,4 +6,5 @@ export interface ITopicRepository {
   createTopic(topic: Topic): void;
   getAllTopics(): Promise<Topic[]>;
   existTopic(name: string): Promise<Boolean>;
+  getTopicsThatAcceptsContent(contentType: string): Promise<Topic[]>;
 }

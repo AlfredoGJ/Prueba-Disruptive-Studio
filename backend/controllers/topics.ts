@@ -25,6 +25,18 @@ export const TopicsController = (
       console.info("Topics", topics[0]);
       return HTTP200Ok(res, topics);
     })
+
+    .get(
+      "/:contentType",
+      Authx([UserType.ADMIN, UserType.CREATOR]),
+      async (req: Request, res: Response) => {
+        const { contentType } = req.params;
+        const topics = await topicsRepository.getTopicsThatAcceptsContent(
+          contentType
+        );
+        return HTTP200Ok(res, topics);
+      }
+    )
     .post(
       "/",
       Authx([UserType.ADMIN]),

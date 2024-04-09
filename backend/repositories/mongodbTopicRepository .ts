@@ -4,6 +4,9 @@ import { ITopicRepository } from "./interfaces/ITopicRepository";
 
 export class MongoDbTopicRepository implements ITopicRepository {
   constructor(private readonly _repo: mongoose.Model<Topic>) {}
+  getTopicsThatAcceptsContent(contentType: string): Promise<Topic[]> {
+    return this._repo.find({ allowedContent: contentType }, { cover: 0, });
+  }
   getTopicByName(name: string): Promise<Topic> {
     return this._repo.findOne({ name: name });
   }

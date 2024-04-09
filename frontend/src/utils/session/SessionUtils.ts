@@ -8,5 +8,10 @@ function readAccessToken(): string | null {
     return localStorage.getItem('access_token');
 }
 
+// Function to read an access token from local storage
+function clearAccessToken(): void {
+    return localStorage.removeItem('access_token');
+}
 
-export { writeAccessToken, readAccessToken };
+
+export { writeAccessToken, readAccessToken, clearAccessToken };

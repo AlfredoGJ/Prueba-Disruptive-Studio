@@ -1,8 +1,10 @@
 import { ContentType } from "./contentType";
 import { Topic } from "./topic";
 
-export interface Item {
+export interface Post {
   type: ContentType;
   topic: Topic;
-  value: any;
+  title: string;
+  author: string;
+  content: any;
 }

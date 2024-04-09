@@ -5,7 +5,7 @@ import { Button } from "../../atoms";
 interface IModalProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   mainActionText: string;
   secondaryActionText?: string;
   handleMainAction: () => void;
@@ -13,7 +13,7 @@ interface IModalProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const Modal: React.FC<IModalProps> = ({
-  onClose,
+  onClose = () => {},
   title,
   open,
   children,

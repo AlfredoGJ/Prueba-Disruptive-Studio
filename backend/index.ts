@@ -8,12 +8,14 @@ import {
   UserScheema,
   TopicScheema,
   ContentTypeScheema,
+  PostScheema,
 } from "infra/db/scheemas";
 
 import {
   MongoDbContentTypeRepository,
   MongoDbTopicRepository,
   MongoDbUserRepository,
+  MongoDbPostRepository,
 } from "./repositories";
 
 import {
@@ -21,6 +23,7 @@ import {
   UsersController,
   TopicsController,
   ContentTypeController,
+  PostsController,
 } from "controllers/";
 
 function start() {
@@ -30,6 +33,7 @@ function start() {
   const contentTypeRepository = new MongoDbContentTypeRepository(
     ContentTypeScheema
   );
+  const postRepository = new MongoDbPostRepository(PostScheema);
   const api = express();
 
   const usersController = UsersController({}, userRepository);
@@ -39,12 +43,14 @@ function start() {
     {},
     contentTypeRepository
   );
+  const postController = PostsController({}, postRepository);
 
   api.use(express.json());
   api.use("/auth", authController);
   api.use("/users", usersController);
   api.use("/topics", topicsController);
   api.use("/contentTypes", contentTypeController);
+  api.use("/posts", postController);
   const app = express();
 
   app.use(cors({ origin: "*" }));

@@ -35,6 +35,14 @@ const endpoints = {
     method: "POST",
     url: "/users",
   },
+  getTopicsThatAcceptContent: {
+    method: "GET",
+    url: "/topics",
+  },
+  createPost: {
+    method: "POST",
+    url: "/posts",
+  },
 };
 
 interface IUseAPIProps {
@@ -50,13 +58,13 @@ export const useAPI = ({ endpoint, useAuth }: IUseAPIProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
 
-  const call = async (data: any) => {
+  const call = async (data: any, params: string) => {
     setLoading(true);
     try {
       const { method, url } = endpoints[endpoint];
       const res = await axios({
         method,
-        url: `${baseURL}${url}`,
+        url: `${baseURL}${url}${params? `/${params}`:""}`,
         data,
         ...{
           headers: useAuth

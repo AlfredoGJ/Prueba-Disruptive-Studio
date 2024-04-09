@@ -3,6 +3,7 @@ import { Tabs } from "../molecules/Tabs/Tabs";
 import { ContentAdmin } from "../organisms/ContentAdmin";
 import { TopicsAdmin } from "../organisms/TopicsAdmin";
 import UsersAdmin from "../organisms/UsersAdmin";
+import FeedPage from "./Feedpage";
 
 interface Props {
   // Define your props here
@@ -30,6 +31,11 @@ const Admin: React.FC<Props> = (props) => {
       title: "Users Admin",
       tabUI: <div>Users Admin</div>,
       panelUI: <UsersAdmin />,
+    },
+    {
+      title: "Posts Feed",
+      tabUI: <div>Feed</div>,
+      panelUI: <FeedPage />,
     },
   ];
 

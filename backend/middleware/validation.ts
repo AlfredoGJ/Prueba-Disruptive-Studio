@@ -63,16 +63,16 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
           });
         break;
 
-      case "Item":
-        let item = new model(body);
+      case "Post":
+        let post = new model(body);
         model
-          .validate(item)
+          .validate(post)
           .then((value) => {
-            req.body.item = item;
+            req.body.post = post;
             next();
           })
           .catch((reason) => {
-            HTTP400BadRequest(res,"Invalid Item", reason.message);
+            HTTP400BadRequest(res,"Invalid Post", reason.message);
           });
         break;
 

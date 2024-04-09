@@ -7,4 +7,6 @@ const UserScheema = new Schema<User>({
   type: { type: String, required: true, enum: UserType },
 });
 
+export{ UserScheema };
+
 export default mongoose.model("User", UserScheema);
