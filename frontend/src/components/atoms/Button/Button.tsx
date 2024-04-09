@@ -4,6 +4,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "lg" | "md";
   shape?: "leftHalf" | "rightHalf" | "round";
+  variant?: "primary" | "secondary";
 }
 
 export const Button = ({
@@ -12,6 +13,7 @@ export const Button = ({
   onClick,
   size = "md",
   shape = "round",
+  variant = "primary",
 }: ButtonProps) => {
   function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     if (!onClick) return;
@@ -54,13 +56,15 @@ export const Button = ({
     }
   };
 
+  const primaryStyle = "bg-purple-600  text-white border border-purple-500";
+  const secondaryStyle = "bg-white text-purple-600 border border-purple-500";
+
   return (
     <button
       onClick={handleClick}
-      className={`${className}  ${styles(
-        shape,
-        size
-      )} bg-purple-600  text-white border border-purple-500`}
+      className={`${className}  ${styles(shape, size)} ${
+        variant === "primary" ? primaryStyle : secondaryStyle
+      }`}
     >
       {children}
     </button>

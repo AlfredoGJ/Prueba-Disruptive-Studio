@@ -12,7 +12,7 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
   ) => {
     var body = req.body;
 
-    console.log("Rersquest", req);
+    console.log("Body", req.body);
 
     switch (model.modelName) {
       case "Topic":
@@ -25,15 +25,16 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
           allowedContent: body.allowedContent,
         };
         const topic = new model(topicData);
-        console.log("Model", topic);
+        // console.log("Model", topic);
         model
           .validate(topic)
           .then((value) => {
             req.body.topic = topic;
+            // console.log("Topic", topic )
             next();
           })
           .catch((reason) => {
-            HTTP400BadRequest(res, reason);
+            HTTP400BadRequest(res, "Invalid Topic", reason.message);
           });
         break;
       case "User":
@@ -45,7 +46,7 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
             next();
           })
           .catch((reason) => {
-            HTTP400BadRequest(res, reason);
+            HTTP400BadRequest(res, "Invalid User", reason.message);
           });
         break;
 
@@ -54,11 +55,11 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
         model
           .validate(contentType)
           .then((value) => {
-            req.body.contentTupe = contentType;
+            req.body.contentType = contentType;
             next();
           })
           .catch((reason) => {
-            HTTP400BadRequest(res, reason);
+            HTTP400BadRequest(res, "Invalid ContentType",reason.message);
           });
         break;
 
@@ -71,7 +72,7 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
             next();
           })
           .catch((reason) => {
-            HTTP400BadRequest(res, reason);
+            HTTP400BadRequest(res,"Invalid Item", reason.message);
           });
         break;
 

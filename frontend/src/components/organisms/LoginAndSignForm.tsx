@@ -3,7 +3,7 @@ import Field from "../molecules/Field/Field";
 import { Button, Textbox } from "../atoms";
 
 interface LoginFormProps {
-  onSubmit: (username: string, password: string) => void;
+  onSubmit: (username: string, email: string) => void;
 }
 
 export const LoginAndSignForm: React.FC<LoginFormProps> = ({ onSubmit }) => {

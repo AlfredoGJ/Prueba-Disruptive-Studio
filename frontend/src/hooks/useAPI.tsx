@@ -1,24 +1,50 @@
 import axios, { AxiosError } from "axios";
 import { useMemo, useState } from "react";
+import { readAccessToken } from "../utils/session/SessionUtils";
 
 const endpoints = {
   login: {
     method: "POST",
     url: "/auth/login",
   },
-  register: {
+  signup: {
     method: "POST",
-    url: "/auth/register",
+    url: "/auth/signup",
+  },
+  getContentTypes: {
+    method: "GET",
+    url: "/contentTypes",
+  },
+  createContentType: {
+    method: "POST",
+    url: "/contentTypes",
+  },
+  getTopics: {
+    method: "GET",
+    url: "/topics",
+  },
+  createTopic: {
+    method: "POST",
+    url: "/topics",
+  },
+  getUsers: {
+    method: "GET",
+    url: "/users",
+  },
+  createUser: {
+    method: "POST",
+    url: "/users",
   },
 };
 
 interface IUseAPIProps {
   endpoint: keyof typeof endpoints;
+  useAuth?: boolean;
 }
 
 const baseURL = process.env.REACT_APP_API_URL;
 
-export const useAPI = ({ endpoint }: IUseAPIProps) => {
+export const useAPI = ({ endpoint, useAuth }: IUseAPIProps) => {
   //   const axiosInstance = useMemo(() => axios.create({ baseURL }), []);
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -28,9 +54,19 @@ export const useAPI = ({ endpoint }: IUseAPIProps) => {
     setLoading(true);
     try {
       const { method, url } = endpoints[endpoint];
-      const res = await axios({ method, url: `${baseURL}${url}`, data });
+      const res = await axios({
+        method,
+        url: `${baseURL}${url}`,
+        data,
+        ...{
+          headers: useAuth
+            ? { Authorization: `Bearer ${readAccessToken()}` }
+            : {},
+        },
+      });
+
       console.log("Response:", res);
-      setResponse(res.data);
+      setResponse(res);
     } catch (err: any) {
       setError(err.response.data);
       console.log("Error:", err);
@@ -39,5 +75,5 @@ export const useAPI = ({ endpoint }: IUseAPIProps) => {
     }
   };
 
-  return { response, loading, error, call };
+  return [call, loading, response, error];
 };

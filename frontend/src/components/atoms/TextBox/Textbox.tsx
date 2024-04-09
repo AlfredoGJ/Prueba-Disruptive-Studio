@@ -8,6 +8,8 @@ interface textboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export const Textbox = forwardRef(function Textbox(
   {
+    id,
+    name,
     onChange,
     type,
     placeholder,
@@ -33,6 +35,8 @@ export const Textbox = forwardRef(function Textbox(
       className={`text-${textAlignment} ${sizeStyle} ${borderStyle} bg-slate-300 placeholder:italic rounded-xl`}
     >
       <input
+        id={id} 
+        name={name}
         className="bg-inherit focus:outline-none w-full"
         autoComplete="off"
         type={type}

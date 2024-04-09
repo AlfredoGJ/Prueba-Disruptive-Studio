@@ -14,7 +14,7 @@ import Jwt from "jsonwebtoken";
 
 function generateAccessToken(user: User) {
   return Jwt.sign(
-    { name: user.name, type: user.type, email:user.email },
+    { name: user.name, type: user.type, email: user.email },
     process.env.TOKEN_SECRET,
     {
       expiresIn: 2000,
@@ -35,6 +35,42 @@ export const AuthController = (
       if (user && username === user.name) {
         const token = generateAccessToken(user);
         return HTTP200Ok(res, { token });
-      } else return HTTP401Unauthorized(res, "Incorrect Credentials");
-    });
+      } else
+        return HTTP401Unauthorized(res, "Unauthorized", "Invalid Credentials");
+    })
+    .post(
+      "/signup",
+      modelValidator(userScheema),
+      async (req: Request, res: Response) => {
+        const { user } = req.body;
+
+        if (user.type === "ADMIN")
+          return HTTP400BadRequest(
+            res,
+            "Bad Request",
+            "You are not allowed to perform this action."
+          );
+
+        const existEmail = await usersService.existUserWithEmail(user.email);
+        const existName = await usersService.existUserWithName(user.name);
+
+        if (existEmail)
+          return HTTP400BadRequest(
+            res,
+            "Bad Request",
+            "The email already exists."
+          );
+
+        if (existName)
+          return HTTP400BadRequest(
+            res,
+            "Badrequest",
+            "The username already exists."
+          );
+
+        usersService.createUser(user);
+        const token = generateAccessToken(user)
+        return HTTP200Ok(res, {token});
+      }
+    );
 };

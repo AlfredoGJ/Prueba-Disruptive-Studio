@@ -8,7 +8,6 @@ import {
 } from "infra/http/responses";
 import { modelValidator } from "middleware/validation";
 import userScheema from "infra/db/scheemas/user";
-import { User } from "domain/models";
 
 export const UsersController = (
   options: RouterOptions,
@@ -32,12 +31,19 @@ export const UsersController = (
         const existName = await usersService.existUserWithName(user.name);
 
         if (existEmail)
-          return HTTP400BadRequest(res, "The email already exists.");
+          return HTTP400BadRequest(
+            res,
+            "Bad Request",
+            "The email already exists."
+          );
 
         if (existName)
-          return HTTP400BadRequest(res, "The name already exists.");
+          return HTTP400BadRequest(
+            res,
+            "Badrequest",
+            "The username already exists."
+          );
 
-        
         usersService.createUser(user);
         return HTTP201Created(res, user);
       }

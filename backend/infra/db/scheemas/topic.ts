@@ -8,7 +8,8 @@ const TopicScheema = new Schema<Topic>({
     data: Buffer,
     contentType: String,
   },
-  allowedContent: [{ type: ContentTypeScheema, required: true }],
+  allowedContent: [{ type: String, required: true }],
 });
 
+export { TopicScheema };
 export default mongoose.model("Topic", TopicScheema);

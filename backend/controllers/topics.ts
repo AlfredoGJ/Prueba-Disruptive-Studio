@@ -22,6 +22,7 @@ export const TopicsController = (
     .Router(options)
     .get("/", async (req: Request, res: Response) => {
       const topics = await topicsRepository.getAllTopics();
+      console.info("Topics", topics[0]);
       return HTTP200Ok(res, topics);
     })
     .post(
@@ -35,7 +36,7 @@ export const TopicsController = (
         const existTopic = await topicsRepository.existTopic(topic.name);
         console.log("USER", req.user);
         if (existTopic)
-          return HTTP400BadRequest(res, "The email already exists.");
+          return HTTP400BadRequest(res, "Bad Request", "Topic already exists");
 
         topicsRepository.createTopic(topic);
         return HTTP201Created(res, topic);

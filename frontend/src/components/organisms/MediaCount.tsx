@@ -18,7 +18,7 @@ export const MediaCountList: React.FC<IMediaCountProps> = ({ mediaCount }) => {
       {mediaCount.map((media) => (
         <MediaType
           title={media.name}
-          subtitle={media.count.toString()}
+          description={media.description}
           Icon={
             media.name === "Video" ? (
               <VideoCameraIcon className={iconClassName} />
