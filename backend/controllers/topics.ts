@@ -21,6 +21,13 @@ export const TopicsController = (
   return express
     .Router(options)
     .get("/", async (req: Request, res: Response) => {
+      const contentCount = req.query.contentCount
+      console.log("Content Count", contentCount)
+      if(contentCount){
+        const topics = await topicsRepository.getAllTopicsWithContentCount();
+        console.info("Topics", topics[0]);
+        return HTTP200Ok(res, topics);
+      }
       const topics = await topicsRepository.getAllTopics();
       console.info("Topics", topics[0]);
       return HTTP200Ok(res, topics);

@@ -9,18 +9,27 @@ import {
 import { CreateTextForm } from "./CreateTextForm/CreateTextFrom";
 import { Modal } from "./Modal/Modal";
 import { useAPI } from "../../hooks/useAPI";
+import { CreateImageForm } from "./CreateImageForm/CreateImageForm";
+import { CreateVideoForm } from "./CreateVideoUrlForm/CreateVideoUrlForm";
 
 interface CreatePostProps {
   onPhotoClick?: () => void;
   onVideoClick?: () => void;
   onTextClick?: () => void;
 }
+
+enum PostType {
+  Text = "Text",
+  Image = "Image",
+  Video = "Video",
+  None = "None",
+}
 const CreatePostComponent: React.FC<CreatePostProps> = ({
   onPhotoClick,
   onTextClick,
   onVideoClick,
 }) => {
-  const [createPostOpen, setCreatePostOpen] = React.useState("none");
+  const [createPost, setCreatePost] = React.useState(PostType.None);
   const [callCreatePost, , responseCreatePost, errorCreatePost] = useAPI({
     endpoint: "createPost",
     useAuth: true,
@@ -28,31 +37,52 @@ const CreatePostComponent: React.FC<CreatePostProps> = ({
 
   const formRef = React.useRef<HTMLFormElement>(null);
 
-
   useEffect(() => {
-    if(responseCreatePost){
-      console.log(responseCreatePost)
-      setCreatePostOpen("None")
-    
+    if (responseCreatePost) {
+      console.log(responseCreatePost);
+      setCreatePost(PostType.None);
     }
-
-
   }, [responseCreatePost, errorCreatePost]);
 
   function handlePostCreate() {
     if (formRef.current) {
-      switch (createPostOpen) {
+      switch (createPost) {
         case "Text": {
           const formData = new FormData(formRef.current);
           const data = {
             topic: formData.get("topic[name]"),
-            content: formData.get("content"),
+            textContent: formData.get("content"),
             title: formData.get("title"),
             type: "Text",
-            author:'Alfredo'
+            author: "Alfredo",
           };
 
-          console.log(`Data: ${data}`)
+          console.log(`Data: ${data}`);
+          callCreatePost(data);
+          break;
+        }
+        case "Image": {
+          const formData = new FormData(formRef.current);
+          let topic = formData.get("topic[name]");
+          formData.append("type", "Image");
+          formData.append("author", "Alfredo");
+          formData.delete("topic[name]");
+          formData.delete("topic[id]");
+          formData.append("topic", topic as string);
+
+          callCreatePost(formData);
+          break;
+        }
+        case "Video": {
+          const formData = new FormData(formRef.current);
+          const data = {
+            topic: formData.get("topic[name]"),
+            textContent: formData.get("textContent"),
+            title: formData.get("title"),
+            type: "Video",
+            author: "Alfredo",
+          };
+
           callCreatePost(data);
           break;
         }
@@ -60,33 +90,48 @@ const CreatePostComponent: React.FC<CreatePostProps> = ({
     }
   }
 
+  const title =
+    createPost === PostType.Text
+      ? "Create Text Post"
+      : createPost === PostType.Image
+      ? "Create Image Post"
+      : "Create Video Post";
+
   return (
     <Surface className="absolute left-0 bottom-0 w-full p-0">
       <div className="flex justify-end space-x-2">
-        <Button className="flex space-x-2" onClick={onPhotoClick}>
+        <Button
+          className="flex space-x-2"
+          onClick={() => setCreatePost(PostType.Image)}
+        >
           <PhotoIcon className="h-6 w-6" />
           <span>Photo</span>
         </Button>
-        <Button className="flex space-x-2" onClick={onVideoClick}>
+        <Button
+          className="flex space-x-2"
+          onClick={() => setCreatePost(PostType.Video)}
+        >
           <VideoCameraIcon className="h-6 w-6" />
           <span>Video URL</span>
         </Button>
         <Button
           className="flex space-x-2"
-          onClick={() => setCreatePostOpen("Text")}
+          onClick={() => setCreatePost(PostType.Text)}
         >
           <DocumentIcon className="h-6 w-6" />
           <span>Text</span>
         </Button>
         <Modal
-          title="Create Text Post"
-          open={createPostOpen === "Text"}
+          title={title}
+          open={createPost !== PostType.None}
           mainActionText="Add Post"
           secondaryActionText="Cancel"
           handleMainAction={handlePostCreate}
-          handleSecondaryAction={() => setCreatePostOpen("none")}
+          handleSecondaryAction={() => setCreatePost(PostType.None)}
         >
-          <CreateTextForm open={false} ref={formRef} />
+          {createPost === PostType.Text && <CreateTextForm ref={formRef} />}
+          {createPost === PostType.Image && <CreateImageForm ref={formRef} />}
+          {createPost === PostType.Video && <CreateVideoForm ref={formRef} />}
         </Modal>
       </div>
     </Surface>

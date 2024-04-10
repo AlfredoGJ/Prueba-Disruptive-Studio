@@ -12,6 +12,7 @@ import multer = require("multer");
 import { Authx } from "middleware/AuthX";
 import { UserType } from "domain/models";
 import { IPostRepository } from "repositories/interfaces/IPostRepository";
+import { group } from "console";
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 export const PostsController = (
@@ -23,7 +24,7 @@ export const PostsController = (
     .post(
       "/",
       Authx([UserType.ADMIN, UserType.CREATOR]),
-      upload.single("cover"),
+      upload.single("imageContent"),
       modelValidator(postScheema),
       async (req: Request & { user }, res: Response) => {
         const { post } = req.body;
@@ -34,6 +35,39 @@ export const PostsController = (
 
         postsRepository.createPost(post);
         return HTTP201Created(res, post);
+      }
+    )
+    .get(
+      "/",
+      Authx([UserType.ADMIN, UserType.CREATOR, UserType.VIEWER]),
+      async (req: Request, res: Response) => {
+        const groupBy = req.query.groupBy;
+
+        if (groupBy && groupBy === "type") {
+          const postsByTopic = await postsRepository.getAllPostsByType();
+          console.info("Posts", postsByTopic);
+          return HTTP200Ok(res, postsByTopic);
+        } else {
+          const posts = await postsRepository.getAllPosts();
+          console.info("Posts", posts[0]);
+          return HTTP200Ok(res, posts);
+        }
+      }
+    )
+    .get(
+      "/query",
+      Authx([UserType.ADMIN, UserType.CREATOR, UserType.VIEWER]),
+      async (req: Request, res: Response) => {
+        const { title, topic, type, pageNumber, itemsPerPage } = req.query;
+        const posts = await postsRepository.queryPosts(
+          title as string,
+          topic as string,
+          type as string,
+          Number(pageNumber),
+          Number(itemsPerPage)
+        );
+        console.info("Posts", posts[0]);
+        return HTTP200Ok(res, posts);
       }
     );
 };

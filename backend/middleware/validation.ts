@@ -3,6 +3,7 @@ import { IUserRepository } from "../repositories/interfaces/IUserRepository";
 import express = require("express");
 import mongoose from "mongoose";
 import { HTTP400BadRequest } from "infra/http/responses";
+import { text } from "stream/consumers";
 
 export const modelValidator = <T>(model: mongoose.Model<T>) => {
   return (
@@ -59,12 +60,28 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
             next();
           })
           .catch((reason) => {
-            HTTP400BadRequest(res, "Invalid ContentType",reason.message);
+            HTTP400BadRequest(res, "Invalid ContentType", reason.message);
           });
         break;
 
       case "Post":
-        let post = new model(body);
+        console.log("Request", req)
+        let postData = {
+          title: body.title,
+          topic: body.topic,
+          type: body.type,
+          author: body.author,
+          textContent: body.textContent,
+          imageContent:
+            body.type === "Image"
+              ? {
+                  data: req.file.buffer,
+                  contentType: req.file.mimetype,
+                }
+              : null,
+        };
+
+        let post = new model(postData);
         model
           .validate(post)
           .then((value) => {
@@ -72,7 +89,7 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
             next();
           })
           .catch((reason) => {
-            HTTP400BadRequest(res,"Invalid Post", reason.message);
+            HTTP400BadRequest(res, "Invalid Post", reason.message);
           });
         break;
 

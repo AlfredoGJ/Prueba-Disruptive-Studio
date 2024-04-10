@@ -3,15 +3,14 @@ import Field from "../Field/Field";
 import { Textbox } from "../../atoms";
 import { Select } from "../Select/Select";
 import { useAPI } from "../../../hooks/useAPI";
-import { ContentType, Option, UserType } from "../../../types/types";
-import { Console } from "console";
+import { Option } from "../../../types/types";
 
 interface UsersFormProps extends React.HTMLProps<HTMLFormElement> {}
 
-export const CreateTextForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
+export const CreateVideoForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
   ({ onSubmit }, ref) => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    const [content, setContent] = useState("");
+    const [title, setTitle] = useState("");
     const [availableTopics, setAvailableTopics] = useState<Option[]>([]);
     const [currentTopic, setCurrentTopic] = useState<Option>({
       id: "",
@@ -23,7 +22,7 @@ export const CreateTextForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
     });
 
     useEffect(() => {
-      call("", "Text");
+      call("", "Video");
     }, []);
 
     useEffect(() => {
@@ -38,12 +37,12 @@ export const CreateTextForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
       }
     }, [response, error]);
 
-    function handleNameChange(event: React.ChangeEvent<HTMLInputElement>) {
-      setName(event.target.value);
+    function handleContentChange(event: React.ChangeEvent<HTMLInputElement>) {
+      setContent(event.target.value);
     }
 
-    function handleEmailChange(event: React.ChangeEvent<HTMLInputElement>) {
-      setEmail(event.target.value);
+    function handleTitleChange(event: React.ChangeEvent<HTMLInputElement>) {
+      setTitle(event.target.value);
     }
 
     function handleTopicChange(newTopic: Option) {
@@ -65,17 +64,17 @@ export const CreateTextForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
         <Field label="Title">
           <Textbox
             name="title"
-            placeholder="The email of the user"
-            value={email}
-            onChange={handleEmailChange}
+            placeholder="The title of your post"
+            value={title}
+            onChange={handleTitleChange}
           />
         </Field>
         <Field label="Content">
           <Textbox
-            name="content"
-            placeholder="The username of the user"
-            value={name}
-            onChange={handleNameChange}
+            name="textContent"
+            placeholder="The URL to your video"
+            value={content}
+            onChange={handleContentChange}
           />
         </Field>
       </form>

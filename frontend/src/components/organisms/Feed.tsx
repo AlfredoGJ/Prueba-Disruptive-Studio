@@ -10,7 +10,8 @@ const Feed: React.FC<FeedProps> = (props) => {
     return (
         // JSX for the component goes here
         <div>
-            {/* Content */}
+            
+            This is the feed content
         </div>
     );
 };

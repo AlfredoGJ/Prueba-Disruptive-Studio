@@ -6,5 +6,6 @@ export interface Post {
   topic: Topic;
   title: string;
   author: string;
-  content: any;
+  textContent: String;
+  imageContent: { data: Buffer; contentType: String };
 }
