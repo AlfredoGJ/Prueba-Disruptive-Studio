@@ -16,16 +16,14 @@ export class MongoDbTopicRepository implements ITopicRepository {
     return this._repo.deleteOne({ _id: new ObjectId(id) });
   }
   updateTopic(id: string, topic: Topic): Promise<any> {
-    return this._repo.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          name: topic.name,
-          cover: topic.cover,
-          allowedContent: topic.allowedContent,
-        },
-      }
-    );
+    const propsToUpdate = {
+      $set: {
+        name: topic.name,
+        allowedContent: topic.allowedContent,
+      },
+    };
+    if (topic.cover) propsToUpdate.$set["cover"] = topic.cover;
+    return this._repo.updateOne({ _id: new ObjectId(id) }, propsToUpdate);
   }
   async existTopicById(id: string): Promise<Boolean> {
     const result = await this._repo.exists({ _id: id });

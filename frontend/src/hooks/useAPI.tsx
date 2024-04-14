@@ -35,6 +35,14 @@ const endpoints = {
     method: "POST",
     url: "/topics",
   },
+  editTopic: {
+    method: "PATCH",
+    url: "/topics",
+  },
+  deleteTopic: {
+    method: "DELETE",
+    url: "/topics",
+  },
   getUsers: {
     method: "GET",
     url: "/users",

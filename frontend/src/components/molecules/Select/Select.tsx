@@ -18,9 +18,7 @@ export const Select = ({
   onChange,
   multiple,
 }: ListBoxProps) => {
-
-
-console.log("VALUE RECEIVED:", value);
+  console.log("VALUE RECEIVED:", value);
   return (
     <div className="top-16 w-auto ">
       <Listbox
@@ -28,12 +26,13 @@ console.log("VALUE RECEIVED:", value);
         name={name}
         onChange={onChange}
         multiple={multiple}
+        by="name"
       >
         <div className="relative mt-1">
           <Listbox.Button className="relative w-full cursor-default rounded-md bg-slate-300 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm h-9">
             <span className="block truncate">
               {Array.isArray(value)
-                ? value.map((v) => v).join(", ")
+                ? value.map((v) => v.name).join(", ")
                 : value?.name}
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -54,7 +53,7 @@ console.log("VALUE RECEIVED:", value);
                 <Listbox.Option
                   key={option.id}
                   className=" cursor-default select-none py-1 px-1"
-                  value={multiple ? option.name :option }
+                  value={option}
                 >
                   {({ selected, active }) => (
                     <>

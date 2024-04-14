@@ -11,7 +11,7 @@ import topicScheema from "infra/db/scheemas/topic";
 import { ITopicRepository } from "repositories/interfaces/ITopicRepository";
 import multer = require("multer");
 import { Authx } from "middleware/AuthX";
-import { UserType } from "domain/models";
+import { Topic, UserType } from "domain/models";
 import topic from "infra/db/scheemas/topic";
 import mongoose from "mongoose";
 const { Binary } = mongoose.mongo;
@@ -25,14 +25,11 @@ export const TopicsController = (
     .Router(options)
     .get("/", async (req: Request, res: Response) => {
       const contentCount = req.query.contentCount;
-      console.log("Content Count", contentCount);
       if (contentCount) {
         const topics = await topicsRepository.getAllTopicsWithContentCount();
-        console.info("Topics", topics[0]);
         return HTTP200Ok(res, topics);
       }
       const topics = await topicsRepository.getAllTopics();
-      console.info("Topics", topics[0]);
       return HTTP200Ok(res, topics);
     })
 
@@ -85,10 +82,15 @@ export const TopicsController = (
     .patch(
       "/:id",
       Authx([UserType.ADMIN]),
-      modelValidator(topicScheema),
-      async (req: Request, res: Response) => {
+      upload.single("cover"),
+      async (
+        req: Request & { file: { buffer: Buffer; mimetype: string } },
+        res: Response
+      ) => {
         const { id } = req.params;
-        const { topic } = req.body;
+        const { name, allowedContent } = req.body;
+        const { file } = req;
+
         console.log("ID", id);
         const existsTopic = await topicsRepository.existTopicById(id);
         if (!existsTopic)
@@ -98,7 +100,17 @@ export const TopicsController = (
             "Content type does not exist"
           );
 
-        await topicsRepository.updateTopic(id, topic);
+        const data = {
+          name,
+          allowedContent,
+          cover: null,
+        };
+        console.log("DATA", data);
+        if (file) {
+          data.cover = { data: file.buffer, contentType: file.mimetype };
+        }
+        console.log("DATA", data);
+        await topicsRepository.updateTopic(id, data);
         return HTTP200Ok(res, "Content type deleted succesfully");
       }
     );

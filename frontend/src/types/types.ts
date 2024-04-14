@@ -19,6 +19,7 @@ export enum UserType {
 }
 
 export interface Topic {
+  _id:string;
   name: string;
   cover: { contentType: string; data: any };
   allowedContent: string[];
