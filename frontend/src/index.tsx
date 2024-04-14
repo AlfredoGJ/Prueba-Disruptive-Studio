@@ -6,6 +6,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { LandingPage, Login } from "./components/pages";
 import { Register } from "./components/pages/Register";
 import Home from "./components/pages/Home";
+import FeedPage from "./components/pages/Feedpage";
+import { UserProvider } from "./context/UserContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -14,28 +16,20 @@ const root = ReactDOM.createRoot(
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <LandingPage
-        title="Welcome"
-        subtitle="Disruptive Media Library"
-        description="Here you can find lots of media from a lot of interesting topics "
-        mediaCount={[
-          { name: "Video", count: 100, description: "Video eo eo" },
-          { name: "Text", count: 200, description: "Text not your ex" },
-          { name: "Image", count: 300, description: "Image in all the people" },
-        ]}
-      />
-    ),
+    element: <LandingPage />,
   },
   { path: "/login", element: <Login /> },
   { path: "/signIn", element: <Register /> },
   { path: "/home", element: <Home /> },
+  { path: "/feed", element: <FeedPage /> },
 ]);
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <UserProvider>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </UserProvider>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

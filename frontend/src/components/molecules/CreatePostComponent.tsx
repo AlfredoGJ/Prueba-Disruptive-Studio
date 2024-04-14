@@ -12,11 +12,7 @@ import { useAPI } from "../../hooks/useAPI";
 import { CreateImageForm } from "./CreateImageForm/CreateImageForm";
 import { CreateVideoForm } from "./CreateVideoUrlForm/CreateVideoUrlForm";
 
-interface CreatePostProps {
-  onPhotoClick?: () => void;
-  onVideoClick?: () => void;
-  onTextClick?: () => void;
-}
+interface CreatePostProps {}
 
 enum PostType {
   Text = "Text",
@@ -24,11 +20,7 @@ enum PostType {
   Video = "Video",
   None = "None",
 }
-const CreatePostComponent: React.FC<CreatePostProps> = ({
-  onPhotoClick,
-  onTextClick,
-  onVideoClick,
-}) => {
+const CreatePostComponent: React.FC<CreatePostProps> = ({}) => {
   const [createPost, setCreatePost] = React.useState(PostType.None);
   const [callCreatePost, , responseCreatePost, errorCreatePost] = useAPI({
     endpoint: "createPost",
@@ -98,7 +90,7 @@ const CreatePostComponent: React.FC<CreatePostProps> = ({
       : "Create Video Post";
 
   return (
-    <Surface className="absolute left-0 bottom-0 w-full p-0">
+    <Surface className="fixed left-0 bottom-0 w-full p-0">
       <div className="flex justify-end space-x-2">
         <Button
           className="flex space-x-2"

@@ -1,9 +1,33 @@
 import { Post } from "domain/models";
 import { IPostRepository } from "./interfaces/IPostRepository";
 import mongoose from "mongoose";
+import { ObjectId } from "mongodb";
 
 export class MongoDbPostRepository implements IPostRepository {
   constructor(private readonly _repo: mongoose.Model<Post>) {}
+  deletePost(id: string): Promise<any> {
+    return this._repo.deleteOne({ _id: new ObjectId(id) });
+  }
+  updatePost(id: string, post: Post): Promise<any> {
+    return this._repo.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          title: post.title,
+          textContent: post.textContent,
+          topic: post.topic,
+          type: post.type,
+          author: post.author,
+          imageContent: post.imageContent,
+        },
+      }
+    );
+  }
+  async existPostById(id: string): Promise<Boolean> {
+    const result = await this._repo.exists({ _id: id });
+    if (result) return true;
+    return false;
+  }
   queryPosts(
     title: string,
     topic: string,
@@ -48,6 +72,7 @@ export class MongoDbPostRepository implements IPostRepository {
           $project: {
             _id: 0,
             type: "$_id",
+            name: "$_id",
             count: 1,
             topics: 1,
           },

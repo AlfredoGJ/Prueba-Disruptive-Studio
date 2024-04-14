@@ -19,6 +19,14 @@ const endpoints = {
     method: "POST",
     url: "/contentTypes",
   },
+  updateContentType: {
+    method: "PATCH",
+    url: "/contentTypes",
+  },
+  deleteContentType: {
+    method: "DELETE",
+    url: "/contentTypes",
+  },
   getTopics: {
     method: "GET",
     url: "/topics",
@@ -43,6 +51,18 @@ const endpoints = {
     method: "POST",
     url: "/posts",
   },
+  getPosts: {
+    method: "GET",
+    url: "/posts",
+  },
+  getPostsSummary: {
+    method: "GET",
+    url: "/posts/summary",
+  },
+  queryPosts: {
+    method: "GET",
+    url: "/posts/query",
+  },
 };
 
 interface IUseAPIProps {
@@ -58,13 +78,19 @@ export const useAPI = ({ endpoint, useAuth }: IUseAPIProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
 
-  const call = async (data: any, params: string) => {
+  const call = async (
+    data: any,
+    params: string,
+    queryParams: [Record<string, string>]
+  ) => {
     setLoading(true);
+    console.log("Calling API:", endpoint, data, params, queryParams);
     try {
       const { method, url } = endpoints[endpoint];
       const res = await axios({
+        params: queryParams,
         method,
-        url: `${baseURL}${url}${params? `/${params}`:""}`,
+        url: `${baseURL}${url}${params ? `/${params}` : ""}`,
         data,
         ...{
           headers: useAuth

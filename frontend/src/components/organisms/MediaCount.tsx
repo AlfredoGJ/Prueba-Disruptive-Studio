@@ -17,17 +17,8 @@ export const MediaCountList: React.FC<IMediaCountProps> = ({ mediaCount }) => {
     <div className="grid-cols-3 gap-6 p-2 ">
       {mediaCount.map((media) => (
         <MediaType
-          title={media.name}
-          description={media.description}
-          Icon={
-            media.name === "Video" ? (
-              <VideoCameraIcon className={iconClassName} />
-            ) : media.name === "Text" ? (
-              <DocumentTextIcon className={iconClassName} />
-            ) : (
-              <PhotoIcon className={iconClassName} />
-            )
-          }
+          contentType={media}
+          type="complex"
         />
       ))}
     </div>

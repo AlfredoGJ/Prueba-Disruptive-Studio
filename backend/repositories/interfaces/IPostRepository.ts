@@ -1,8 +1,6 @@
 import { Post } from "../../domain/models";
 
 export interface IPostRepository {
-  //   getTopicByName(name: string): Promise<Topic>;
-  //   getTopicById(id: string): Promise<Topic>;
   createPost(post: Post): Promise<Post>;
   getAllPostsByType(): Promise<Post>;
   queryPosts(
@@ -13,7 +11,7 @@ export interface IPostRepository {
     itemsPerPage: number
   ): Promise<Post[]>;
   getAllPosts(): Promise<Post[]>;
-  //   getAllTopics(): Promise<Topic[]>;
-  //   existTopic(name: string): Promise<Boolean>;
-  //   getTopicsThatAcceptsContent(contentType: string): Promise<Topic[]>;
+  deletePost(id: string): Promise<Boolean>;
+  updatePost(id: string, post: Post): Promise<any>;
+  existPostById(id: string): Promise<Boolean>;
 }

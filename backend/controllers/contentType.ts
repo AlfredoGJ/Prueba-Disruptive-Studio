@@ -28,9 +28,8 @@ export const ContentTypeController = (
       modelValidator(contentTypeSchema),
       async (req: Request & { user }, res: Response) => {
         const { contentType } = req.body;
-        const existsContentType = await contentTypeRepository.existContentType(
-          contentType.name
-        );
+        const existsContentType =
+          await contentTypeRepository.existContentTypeByName(contentType.name);
         console.log("USER", req.user);
         if (existsContentType)
           return HTTP400BadRequest(
@@ -41,6 +40,46 @@ export const ContentTypeController = (
 
         contentTypeRepository.createContentType(contentType);
         return HTTP201Created(res, contentType);
+      }
+    )
+    .delete(
+      "/:id",
+      Authx([UserType.ADMIN]),
+      async (req: Request, res: Response) => {
+        const { id } = req.params;
+        console.log("ID", id);
+        const existsContentType =
+          await contentTypeRepository.existContentTypeById(id);
+        if (!existsContentType)
+          return HTTP400BadRequest(
+            res,
+            "Bad Request",
+            "Content type does not exist"
+          );
+
+        await contentTypeRepository.deleteContentType(id);
+        return HTTP200Ok(res, "Content type deleted succesfully");
+      }
+    )
+    .patch(
+      "/:id",
+      Authx([UserType.ADMIN]),
+      modelValidator(contentTypeSchema),
+      async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { contentType } = req.body;
+        console.log("ID", id);
+        const existsContentType =
+          await contentTypeRepository.existContentTypeById(id);
+        if (!existsContentType)
+          return HTTP400BadRequest(
+            res,
+            "Bad Request",
+            "Content type does not exist"
+          );
+
+        await contentTypeRepository.updataContentType(id, contentType);
+        return HTTP200Ok(res, "Content type deleted succesfully");
       }
     );
 };

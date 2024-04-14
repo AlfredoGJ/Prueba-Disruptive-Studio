@@ -1,7 +1,16 @@
+export enum ContentTypesEnum {
+  VIDEO = "Video",
+  TEXT = "Text",
+  IMAGE = "Image",
+}
+
 interface ContentType {
+  _id: string;
+  type: ContentTypesEnum;
   name: string;
   description: string;
   count?: number;
+  topics?: string[];
 }
 export enum UserType {
   ADMIN = "ADMIN",
@@ -11,8 +20,17 @@ export enum UserType {
 
 export interface Topic {
   name: string;
-  cover: {contentType: string; data: any};
+  cover: { contentType: string; data: any };
   allowedContent: string[];
+}
+
+export interface Post {
+  type: ContentTypesEnum;
+  topic: string;
+  title: string;
+  author: string;
+  textContent: string;
+  imageContent: { data: Buffer; contentType: String };
 }
 
 type TabData = {

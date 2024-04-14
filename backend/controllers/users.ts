@@ -8,6 +8,8 @@ import {
 } from "infra/http/responses";
 import { modelValidator } from "middleware/validation";
 import userScheema from "infra/db/scheemas/user";
+import { Authx } from "middleware/AuthX";
+import { UserType } from "domain/models";
 
 export const UsersController = (
   options: RouterOptions,
@@ -46,6 +48,36 @@ export const UsersController = (
 
         usersService.createUser(user);
         return HTTP201Created(res, user);
+      }
+    )
+    .delete(
+      "/:id",
+      Authx([UserType.ADMIN]),
+      async (req: Request, res: Response) => {
+        const { id } = req.params;
+        console.log("ID", id);
+        const existsUser = await usersService.existUserById(id);
+        if (!existsUser)
+          return HTTP400BadRequest(res, "Bad Request", "User does not exist");
+
+        await usersService.deleteUser(id);
+        return HTTP200Ok(res, "User deleted succesfully");
+      }
+    )
+    .patch(
+      "/:id",
+      Authx([UserType.ADMIN]),
+      modelValidator(userScheema),
+      async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { user } = req.body;
+        console.log("ID", id);
+        const existsUser = await usersService.existUserById(id);
+        if (!existsUser)
+          return HTTP400BadRequest(res, "Bad Request", "User does not exist");
+
+        await usersService.updateUser(id, user);
+        return HTTP200Ok(res, "User updated succesfully");
       }
     );
 };

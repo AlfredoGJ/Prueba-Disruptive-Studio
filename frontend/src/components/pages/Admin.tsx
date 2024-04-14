@@ -9,12 +9,6 @@ interface Props {
   // Define your props here
 }
 
-const mediaCount = [
-  { name: "Video", count: 100, description: "Video eo eo" },
-  { name: "Text", count: 200, description: "Text not your ex" },
-  { name: "Image", count: 300, description: "Image in all the people" },
-];
-
 const Admin: React.FC<Props> = (props) => {
   let tabData = [
     {

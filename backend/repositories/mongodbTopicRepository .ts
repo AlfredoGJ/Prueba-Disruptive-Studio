@@ -1,9 +1,37 @@
 import mongoose from "mongoose";
 import { Topic } from "../domain/models";
 import { ITopicRepository } from "./interfaces/ITopicRepository";
+import { ObjectId } from "mongodb";
+
+const { Binary } = mongoose.mongo;
 
 export class MongoDbTopicRepository implements ITopicRepository {
   constructor(private readonly _repo: mongoose.Model<Topic>) {}
+  async existTopicByName(name: string): Promise<Boolean> {
+    const result = await this._repo.exists({ name });
+    if (result) return true;
+    return false;
+  }
+  deleteTopic(id: string): Promise<any> {
+    return this._repo.deleteOne({ _id: new ObjectId(id) });
+  }
+  updateTopic(id: string, topic: Topic): Promise<any> {
+    return this._repo.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          name: topic.name,
+          cover: topic.cover,
+          allowedContent: topic.allowedContent,
+        },
+      }
+    );
+  }
+  async existTopicById(id: string): Promise<Boolean> {
+    const result = await this._repo.exists({ _id: id });
+    if (result) return true;
+    return false;
+  }
   getAllTopicsWithContentCount(): Promise<Topic[]> {
     return this._repo.aggregate([
       {
@@ -18,7 +46,7 @@ export class MongoDbTopicRepository implements ITopicRepository {
         $project: {
           _id: 0,
           name: 1,
-          cover:1,
+          cover: 1,
           allowedContent: 1,
           posts: { $size: "$posts" },
         },
@@ -26,8 +54,43 @@ export class MongoDbTopicRepository implements ITopicRepository {
     ]);
   }
   getTopicsThatAcceptsContent(contentType: string): Promise<Topic[]> {
-    return this._repo.find({ allowedContent: contentType }, { cover: 0 });
+    // return this._repo.find({ allowedContent: contentType }, { cover: 0 });
+
+    console.log("CONTENT TYPE", contentType);
+    return this._repo
+      .aggregate([
+        {
+          $unwind: "$allowedContent",
+        },
+        {
+          $lookup: {
+            from: "contenttypes",
+            localField: "allowedContent",
+            foreignField: "name",
+            as: "allowedContentType",
+          },
+        },
+        { $unwind: "$allowedContentType" },
+        {
+          $group: {
+            _id: "$_id",
+            name: { $first: "$name" },
+            allowedContent: { $addToSet: "$allowedContentType.type" },
+          },
+        },
+        {
+          $project: {
+            cover: 0,
+          },
+        },
+      ])
+      .then((topics) => {
+        return topics.filter((topic) =>
+          topic.allowedContent.includes(contentType)
+        );
+      });
   }
+
   getTopicByName(name: string): Promise<Topic> {
     return this._repo.findOne({ name: name });
   }

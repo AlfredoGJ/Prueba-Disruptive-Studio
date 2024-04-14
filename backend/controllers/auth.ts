@@ -17,7 +17,7 @@ function generateAccessToken(user: User) {
     { name: user.name, type: user.type, email: user.email },
     process.env.TOKEN_SECRET,
     {
-      expiresIn: 2000,
+      expiresIn: 4000,
     }
   );
 }

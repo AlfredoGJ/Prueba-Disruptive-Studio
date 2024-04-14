@@ -54,6 +54,10 @@ export const PostsController = (
         }
       }
     )
+    .get("/summary", async (req: Request, res: Response) => {
+      const postsByTopic = await postsRepository.getAllPostsByType();
+      return HTTP200Ok(res, postsByTopic);
+    })
     .get(
       "/query",
       Authx([UserType.ADMIN, UserType.CREATOR, UserType.VIEWER]),
@@ -68,6 +72,37 @@ export const PostsController = (
         );
         console.info("Posts", posts[0]);
         return HTTP200Ok(res, posts);
+      }
+    )
+    .delete(
+      "/:id",
+      Authx([UserType.ADMIN]),
+      async (req: Request, res: Response) => {
+        const { id } = req.params;
+        console.log("ID", id);
+        const existsPost = await postsRepository.existPostById(id);
+        if (!existsPost)
+          return HTTP400BadRequest(res, "Bad Request", "Post does not exist");
+
+        await postsRepository.deletePost(id);
+        return HTTP200Ok(res, "Post deleted succesfully");
+      }
+    )
+    .patch(
+      "/:id",
+      Authx([UserType.ADMIN]),
+      upload.single("imageContent"),
+      modelValidator(postScheema),
+      async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { post } = req.body;
+        console.log("ID", id);
+        const existsPost = await postsRepository.existPostById(id);
+        if (!existsPost)
+          return HTTP400BadRequest(res, "Bad Request", "Post does not exist");
+
+        await postsRepository.updatePost(id, post);
+        return HTTP200Ok(res, "Post updated succesfully");
       }
     );
 };

@@ -11,7 +11,7 @@ export const Surface: React.FC<SurfaceProps> = ({ children, className }) => {
   return (
     // JSX markup goes here
     <div
-      className={`${className} flex p-2 border-2 border-purple-100 bg-purple-50 rounded-md`}
+      className={`${className} p-2 border-2 border-purple-100 bg-purple-50 rounded-md`}
     >
       {children}
     </div>
