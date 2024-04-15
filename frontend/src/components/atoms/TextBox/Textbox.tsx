@@ -32,7 +32,7 @@ export const Textbox = forwardRef(function Textbox(
 
   return (
     <div
-      className={`text-${textAlignment} ${sizeStyle} ${borderStyle} bg-slate-300 placeholder:italic rounded-xl`}
+      className={`text-${textAlignment} ${sizeStyle} ${borderStyle} bg-slate-200 placeholder:italic rounded-xl`}
     >
       <input
         id={id} 
