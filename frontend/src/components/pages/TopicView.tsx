@@ -27,9 +27,10 @@ const TopicView: React.FC<Props> = ({ onTopicSelect }) => {
     // JSX markup goes here
     <div className="p-2">
       <h1 className="text-2xl pb-3">Topics</h1>
-      <div className="grid-flow-row">
+      <div className="grid gap-2 xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {topics.map((topic) => (
           <div
+            key={topic._id}
             className="cursor-pointer"
             onClick={() => onTopicSelect(topic.name)}
           >

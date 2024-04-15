@@ -146,22 +146,25 @@ const Feed: React.FC<FeedProps> = ({ initialContentType, initialTopic }) => {
           initialContentType={initialContentType}
           initialTopic={initialTopic}
         />
-        <div>
+        <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => {
             return post.type === ContentTypesEnum.VIDEO ? (
               <VideoPost
+                key={post._id}
                 post={post}
                 onDeleteClick={handlePostDeleteClick}
                 onEditClick={handlePostEditClick}
               />
             ) : post.type === ContentTypesEnum.IMAGE ? (
               <ImagePost
+                key={post._id}
                 post={post}
                 onDeleteClick={handlePostDeleteClick}
                 onEditClick={handlePostEditClick}
               />
             ) : (
               <TextPost
+                key={post._id}
                 post={post}
                 onDeleteClick={handlePostDeleteClick}
                 onEditClick={handlePostEditClick}

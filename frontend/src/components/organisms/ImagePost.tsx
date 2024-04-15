@@ -22,6 +22,7 @@ const ImagePost: React.FC<ImagePostProps> = ({
       onEditClick={onEditClick}
     >
       <img
+        width="100%"
         src={`data:${post.imageContent.contentType};base64,${image}`}
         alt={post.title}
       />

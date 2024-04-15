@@ -120,14 +120,17 @@ export const TopicsAdmin: React.FC<Props> = (props) => {
 
   return (
     <div className="p-2">
-      {topics.map((topic) => (
-        <TopicCard
-          topicData={topic}
-          admin
-          onEditClick={handleTopicEditClick}
-          onDeleteClick={handleTopicDeleteClick}
-        />
-      ))}
+      <div className="grid gap-2 xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {topics.map((topic) => (
+          <TopicCard
+            key={topic._id}
+            topicData={topic}
+            admin
+            onEditClick={handleTopicEditClick}
+            onDeleteClick={handleTopicDeleteClick}
+          />
+        ))}
+      </div>
       <div className=" flex justify-end pt-2">
         <Button onClick={() => setDialogOpen(true)}>Add content Type</Button>
       </div>

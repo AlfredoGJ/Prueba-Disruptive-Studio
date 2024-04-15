@@ -8,9 +8,9 @@ interface TabsProps {
 
 export const Tabs = ({ tabsData }: TabsProps) => {
   return (
-    <div className="w-full max-w-md sm:px-0">
-      <Tab.Group>
-        <Tab.List className="flex border-gray-600 border">
+    <div className="w-full  sm:px-0">
+      <Tab.Group >
+        <Tab.List className="flex border-gray-600 border w-full">
           {tabsData.map((tabitem) => (
             <TabItem title={tabitem.title}>{tabitem.tabUI}</TabItem>
           ))}

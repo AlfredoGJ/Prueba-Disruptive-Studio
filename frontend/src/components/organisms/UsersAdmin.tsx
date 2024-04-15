@@ -53,7 +53,7 @@ const UsersAdmin: React.FC<UsersAdminProps> = (props) => {
     errorCreateUser,
     responseUpdateUser,
     errorUpdateUser,
-    responseDeleteUser
+    responseDeleteUser,
   ]);
 
   function handleAddUser() {
@@ -83,8 +83,8 @@ const UsersAdmin: React.FC<UsersAdminProps> = (props) => {
   }
 
   function handleContentTypeDelete() {
-    callDeleteUser("",tempUser?._id);
-    setTempUser(undefined)
+    callDeleteUser("", tempUser?._id);
+    setTempUser(undefined);
   }
 
   function handleDeleteModalSecondaryAction() {
@@ -99,13 +99,16 @@ const UsersAdmin: React.FC<UsersAdminProps> = (props) => {
 
   return (
     <div className="p-2">
-      {users.map((user) => (
-        <UserItem
-          user={user}
-          onDeleteClick={handleDeleteClick}
-          onEditClick={handleUpdateClick}
-        />
-      ))}
+      <div className="grid gap-2 xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {users.map((user) => (
+          <UserItem
+            key={user._id}
+            user={user}
+            onDeleteClick={handleDeleteClick}
+            onEditClick={handleUpdateClick}
+          />
+        ))}
+      </div>
       <div className=" flex justify-end pt-2">
         <Button onClick={() => setDialogOpen(true)}>Add User</Button>
       </div>

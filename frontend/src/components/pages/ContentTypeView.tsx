@@ -27,9 +27,10 @@ const ContentTypeView: React.FC<Props> = ({ onContentTypeSelect }) => {
   return (
     <div className="p-2">
       <h1 className="text-2xl pb-3">Content</h1>
-      <div className="grid-flow-row">
+      <div className="grid gap-2 xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {contentTypes.map((content) => (
           <div
+            key={content._id}
             className="cursor-pointer"
             onClick={() => onContentTypeSelect(content.type)}
           >

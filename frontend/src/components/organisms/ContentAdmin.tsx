@@ -93,14 +93,17 @@ export const ContentAdmin: React.FC<ContentAdminProps> = ({}) => {
   }
 
   return (
-    <div>
-      {allowedContent.map((media) => (
-        <MediaType
-          contentType={media}
-          onDeleteClick={() => handleDeleteClick(media)}
-          onEditClick={() => handleContentEdit(media)}
-        />
-      ))}
+    <div className="w-full">
+      <div className="grid gap-2 xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {allowedContent.map((media) => (
+          <MediaType
+            key={media._id}
+            contentType={media}
+            onDeleteClick={() => handleDeleteClick(media)}
+            onEditClick={() => handleContentEdit(media)}
+          />
+        ))}
+      </div>
       <div className=" flex justify-end pt-2">
         <Button onClick={() => setDialogOpen(true)}>Add content Type</Button>
       </div>

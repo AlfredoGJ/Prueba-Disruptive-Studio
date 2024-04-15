@@ -34,7 +34,7 @@ const Admin: React.FC<Props> = (props) => {
   ];
 
   return (
-    <div>
+    <div className="w-full">
       <Tabs tabsData={tabData}></Tabs>
     </div>
   );
