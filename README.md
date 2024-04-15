@@ -1,4 +1,4 @@
-# Sistuptive Studio challenge app
+# Distuptive Studio challenge app
 
 ## How to run
 
@@ -8,7 +8,7 @@
 - Have mongodb server installed
 - add the corresponding `.env` files with the appropiate variables to the `backend` and the `frontend` folders. An example is provided in each of those folders for reference.
 - run `npm i` inside the `backend` folder
-- run `npm i` inside the frontend folder
+- run `npm i` inside the `frontend` folder
 
 ### Running the backend
 
