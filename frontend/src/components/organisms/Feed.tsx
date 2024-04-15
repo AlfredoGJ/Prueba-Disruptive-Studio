@@ -141,11 +141,13 @@ const Feed: React.FC<FeedProps> = ({ initialContentType, initialTopic }) => {
   return (
     <>
       <div className="p-2">
-        <FeedFilters
-          onSearch={handleSearch}
-          initialContentType={initialContentType}
-          initialTopic={initialTopic}
-        />
+        <div className="pb-6 pt-2 mt-2 mb-2">
+          <FeedFilters
+            onSearch={handleSearch}
+            initialContentType={initialContentType}
+            initialTopic={initialTopic}
+          />
+        </div>
         <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => {
             return post.type === ContentTypesEnum.VIDEO ? (
