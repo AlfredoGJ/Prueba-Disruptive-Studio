@@ -5,6 +5,7 @@ import {
   HTTP200Ok,
   HTTP201Created,
   HTTP400BadRequest,
+  HTTP500InternalServerError,
 } from "infra/http/responses";
 import { modelValidator } from "middleware/validation";
 import topicScheema from "infra/db/scheemas/topic";
@@ -17,6 +18,7 @@ import mongoose from "mongoose";
 const { Binary } = mongoose.mongo;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
 export const TopicsController = (
   options: RouterOptions,
   topicsRepository: ITopicRepository
@@ -24,24 +26,40 @@ export const TopicsController = (
   return express
     .Router(options)
     .get("/", async (req: Request, res: Response) => {
-      const contentCount = req.query.contentCount;
-      if (contentCount) {
-        const topics = await topicsRepository.getAllTopicsWithContentCount();
+      try {
+        const contentCount = req.query.contentCount;
+        if (contentCount) {
+          const topics = await topicsRepository.getAllTopicsWithContentCount();
+          return HTTP200Ok(res, topics);
+        }
+        const topics = await topicsRepository.getAllTopics();
         return HTTP200Ok(res, topics);
+      } catch (error) {
+        return HTTP500InternalServerError(
+          res,
+          "An unexpected error ocurred",
+          error.message
+        );
       }
-      const topics = await topicsRepository.getAllTopics();
-      return HTTP200Ok(res, topics);
     })
 
     .get(
       "/:contentType",
       Authx([UserType.ADMIN, UserType.CREATOR]),
       async (req: Request, res: Response) => {
-        const { contentType } = req.params;
-        const topics = await topicsRepository.getTopicsThatAcceptsContent(
-          contentType
-        );
-        return HTTP200Ok(res, topics);
+        try {
+          const { contentType } = req.params;
+          const topics = await topicsRepository.getTopicsThatAcceptsContent(
+            contentType
+          );
+          return HTTP200Ok(res, topics);
+        } catch (error) {
+          return HTTP500InternalServerError(
+            res,
+            "An unexpected error ocurred",
+            error.message
+          );
+        }
       }
     )
     .post(
@@ -50,31 +68,53 @@ export const TopicsController = (
       upload.single("cover"),
       modelValidator(topicScheema),
       async (req: Request & { user }, res: Response) => {
-        const { topic } = req.body;
-        console.error("I Entered the controller :S");
-        const existTopic = await topicsRepository.existTopicByName(topic.name);
-        if (existTopic)
-          return HTTP400BadRequest(res, "Bad Request", "Topic already exists");
+        try {
+          const { topic } = req.body;
+          console.error("I Entered the controller :S");
+          const existTopic = await topicsRepository.existTopicByName(
+            topic.name
+          );
+          if (existTopic)
+            return HTTP400BadRequest(
+              res,
+              "Bad Request",
+              "Topic already exists"
+            );
 
-        topicsRepository.createTopic(topic);
-        return HTTP201Created(res, topic);
+          topicsRepository.createTopic(topic);
+          return HTTP201Created(res, topic);
+        } catch (error) {
+          return HTTP500InternalServerError(
+            res,
+            "An unexpected error ocurred",
+            error.message
+          );
+        }
       }
     )
     .delete(
       "/:id",
       Authx([UserType.ADMIN]),
       async (req: Request, res: Response) => {
-        const { id } = req.params;
-        const existsTopic = await topicsRepository.existTopicById(id);
-        if (!existsTopic)
-          return HTTP400BadRequest(
-            res,
-            "Bad Request",
-            "Content type does not exist"
-          );
+        try {
+          const { id } = req.params;
+          const existsTopic = await topicsRepository.existTopicById(id);
+          if (!existsTopic)
+            return HTTP400BadRequest(
+              res,
+              "Bad Request",
+              "Content type does not exist"
+            );
 
-        await topicsRepository.deleteTopic(id);
-        return HTTP200Ok(res, "Content type deleted succesfully");
+          await topicsRepository.deleteTopic(id);
+          return HTTP200Ok(res, "Content type deleted succesfully");
+        } catch (error) {
+          return HTTP500InternalServerError(
+            res,
+            "An unexpected error ocurred",
+            error.message
+          );
+        }
       }
     )
     .patch(
@@ -85,6 +125,8 @@ export const TopicsController = (
         req: Request & { file: { buffer: Buffer; mimetype: string } },
         res: Response
       ) => {
+
+        try{
         const { id } = req.params;
         const { name, allowedContent } = req.body;
         const { file } = req;
@@ -106,7 +148,14 @@ export const TopicsController = (
           data.cover = { data: file.buffer, contentType: file.mimetype };
         }
         await topicsRepository.updateTopic(id, data);
-        return HTTP200Ok(res, "Content type deleted succesfully");
+        return HTTP200Ok(res, "Content type deleted succesfully");}
+        catch (error) {
+          return HTTP500InternalServerError(
+            res,
+            "An unexpected error ocurred",
+            error.message
+          );
+        }
       }
     );
 };
