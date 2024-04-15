@@ -26,6 +26,7 @@ export interface Topic {
 }
 
 export interface Post {
+  _id: string;
   type: ContentTypesEnum;
   topic: string;
   title: string;
@@ -44,6 +45,7 @@ export interface User {
   name: string;
   email: string;
   type: UserType;
+  _id: string;
 }
 
 type Option = {

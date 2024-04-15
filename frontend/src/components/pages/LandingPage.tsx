@@ -26,7 +26,6 @@ export const LandingPage: React.FC<ILandingPageProps> = ({}) => {
 
   const userContext = React.useContext(UserContext);
 
-  console.log(`User: ${userContext}`);
 
   return (
     <main className="">

@@ -42,23 +42,19 @@ export const TopicsAdmin: React.FC<Props> = (props) => {
 
   useEffect(() => {
     call("");
-    console.log("Calling API");
   }, []);
 
   useEffect(() => {
     callGetTopics("");
-    console.log("Calling API");
   }, []);
 
   useEffect(() => {
-    console.log(response);
     if (response) {
       setContentTypes(response.data);
     }
   }, [response]);
 
   useEffect(() => {
-    console.log(responseGetTopics);
     if (responseGetTopics) {
       setTopics(responseGetTopics.data);
     }
@@ -76,14 +72,12 @@ export const TopicsAdmin: React.FC<Props> = (props) => {
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       const formEntries = Object.fromEntries(formData.entries());
-      console.log("From entries", formEntries);
       let keysToDelete: string[] = [];
       let keysToChange: string[] = [];
       formData.forEach((value, key) => {
         let regExpKey = /allowedContent\[[0-9]\]\[id\]/i;
         let regExpName = /allowedContent\[[0-9]\]\[name\]/i;
         if (regExpKey.test(key)) {
-          console.log("Value", value);
           keysToDelete.push(key);
         }
         if (regExpName.test(key)) {
@@ -102,7 +96,6 @@ export const TopicsAdmin: React.FC<Props> = (props) => {
       });
 
       const formEntries2 = Object.fromEntries(formData.entries());
-      console.log("From entries 2", formEntries2);
 
       if (temporalTopic) {
         callUpdateTopic(formData, temporalTopic._id);

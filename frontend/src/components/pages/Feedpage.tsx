@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import CreatePostComponent from "../molecules/CreatePostComponent";
 import Feed from "../organisms/Feed";
 import { CreateTextForm } from "../molecules/CreateTextForm/CreateTextFrom";
@@ -7,7 +7,8 @@ import TopicView from "./TopicView";
 import ContentTypeView from "./ContentTypeView";
 import Field from "../molecules/Field/Field";
 import { Select } from "../molecules/Select/Select";
-import { Option } from "../../types/types";
+import { Option, UserType } from "../../types/types";
+import { UserContext } from "../../context/UserContext";
 interface FeedPageProps {
   // Define your props here
 }
@@ -15,13 +16,15 @@ type validViews = "topicView" | "contentTypeView" | "feedView";
 const viewOptions = [
   { id: "topicView", name: "Topic" },
   { id: "contentTypeView", name: "Content Type" },
-  { id: "feedView", name: "Feed" }
+  { id: "feedView", name: "Feed" },
 ];
 const FeedPage: React.FC<FeedPageProps> = (props) => {
   const [currentView, setCurrentView] = React.useState<Option>(viewOptions[0]);
   const [initialTopic, setInitialTopic] = React.useState<string>("");
   const [initialContentType, setInitialContentType] =
     React.useState<string>("");
+
+  const [user] = useContext(UserContext);
 
   const handleContentTypeSelect = (contentType: string) => {
     setInitialContentType(contentType);
@@ -31,7 +34,7 @@ const FeedPage: React.FC<FeedPageProps> = (props) => {
   const handleTopicSelect = (topic: string) => {
     setInitialTopic(topic);
     setCurrentView({ id: "feedView", name: "Feed" });
-  }
+  };
 
   return (
     <>
@@ -44,7 +47,9 @@ const FeedPage: React.FC<FeedPageProps> = (props) => {
         />
       </Field>
       <div>
-        {currentView.id === "topicView" && <TopicView onTopicSelect={handleTopicSelect} />}
+        {currentView.id === "topicView" && (
+          <TopicView onTopicSelect={handleTopicSelect} />
+        )}
         {currentView.id === "contentTypeView" && (
           <ContentTypeView onContentTypeSelect={handleContentTypeSelect} />
         )}
@@ -54,7 +59,7 @@ const FeedPage: React.FC<FeedPageProps> = (props) => {
             initialTopic={initialTopic}
           />
         )}
-        <CreatePostComponent />
+        {user?.type !== UserType.VIEWER && <CreatePostComponent />}
       </div>
     </>
   );

@@ -30,8 +30,6 @@ export const TopicForm = React.forwardRef<HTMLFormElement, TopicFormProps>(
     function handleAllowedContentChange(contentTypes: Option[]) {
       // const allowedTypes =contentTypes.map((content) => con);
       setAllowedTypes(contentTypes);
-      console.log("Value given by the component", contentTypes);
-      console.log("value I set to the component", allowedTypes);
     }
 
     function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {

@@ -19,7 +19,6 @@ export const Login: React.FC = () => {
   useEffect(() => {
     if (response && response.status === 200) {
       const user:User  = jwtDecode(response.data.token);
-      console.log("User:", user);
       setUser(user);
       writeAccessToken(response.data.token);
       navigate("/home");

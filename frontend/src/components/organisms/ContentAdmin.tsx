@@ -55,12 +55,10 @@ export const ContentAdmin: React.FC<ContentAdminProps> = ({}) => {
   ]);
 
   useEffect(() => {
-    console.log("Response:", response);
     if (response) setAllowedContent(response.data);
   }, [response]);
 
   function handleAddContentType() {
-    console.log("FormRef:", formRef.current);
     if (formRef.current) {
       const formData = new FormData(formRef.current);
 
@@ -71,7 +69,6 @@ export const ContentAdmin: React.FC<ContentAdminProps> = ({}) => {
       };
 
       if (tempContentType) {
-        console.log("TempContentType:", tempContentType);
         callUpdateContent(newContentType, tempContentType._id);
         setTempContentType(undefined);
       } else callAddContent(newContentType);

@@ -3,19 +3,21 @@ import Field from "../Field/Field";
 import { Textbox } from "../../atoms";
 import { Select } from "../Select/Select";
 import { useAPI } from "../../../hooks/useAPI";
-import { ContentType, Option, UserType } from "../../../types/types";
+import { ContentType, Option, Post, UserType } from "../../../types/types";
 import { Console } from "console";
 
-interface UsersFormProps extends React.HTMLProps<HTMLFormElement> {}
+interface UsersFormProps extends React.HTMLProps<HTMLFormElement> {
+  initialText?: Post;
+}
 
 export const CreateTextForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
-  ({ onSubmit }, ref) => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+  ({ onSubmit, initialText }, ref) => {
+    const [content, setContent] = useState(initialText?.textContent || "");
+    const [title, setTitle] = useState(initialText?.title || "");
     const [availableTopics, setAvailableTopics] = useState<Option[]>([]);
     const [currentTopic, setCurrentTopic] = useState<Option>({
-      id: "",
-      name: "",
+      id: initialText?.topic || "",
+      name: initialText?.topic || "",
     });
     const [call, , response, error] = useAPI({
       endpoint: "getTopicsThatAcceptContent",
@@ -28,7 +30,6 @@ export const CreateTextForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
 
     useEffect(() => {
       if (response) {
-        console.log(response);
         const availableTopics = response.data.map((topic: any) => ({
           id: topic.name,
           name: topic.name,
@@ -39,15 +40,14 @@ export const CreateTextForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
     }, [response, error]);
 
     function handleNameChange(event: React.ChangeEvent<HTMLInputElement>) {
-      setName(event.target.value);
+      setContent(event.target.value);
     }
 
     function handleEmailChange(event: React.ChangeEvent<HTMLInputElement>) {
-      setEmail(event.target.value);
+      setTitle(event.target.value);
     }
 
     function handleTopicChange(newTopic: Option) {
-      console.log("USERTYPE:", newTopic);
       setCurrentTopic(newTopic);
     }
 
@@ -65,16 +65,16 @@ export const CreateTextForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
         <Field label="Title">
           <Textbox
             name="title"
-            placeholder="The email of the user"
-            value={email}
+            placeholder="The title of your post"
+            value={title}
             onChange={handleEmailChange}
           />
         </Field>
         <Field label="Content">
           <Textbox
             name="content"
-            placeholder="The username of the user"
-            value={name}
+            placeholder="The content of your post"
+            value={content}
             onChange={handleNameChange}
           />
         </Field>

@@ -37,7 +37,6 @@ const FileUpload = forwardRef(function Textbox(
   const innerRef = React.useRef<HTMLInputElement>(null);
 
   function handleClick() {
-    console.log("I was clicked");
     if (innerRef.current) {
       innerRef.current.click();
     }

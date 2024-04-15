@@ -13,7 +13,6 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
   ) => {
     var body = req.body;
 
-    console.log("Body", req.body);
 
     switch (model.modelName) {
       case "Topic":
@@ -26,12 +25,10 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
           allowedContent: body.allowedContent,
         };
         const topic = new model(topicData);
-        // console.log("Model", topic);
         model
           .validate(topic)
           .then((value) => {
             req.body.topic = topic;
-            // console.log("Topic", topic )
             next();
           })
           .catch((reason) => {
@@ -65,7 +62,6 @@ export const modelValidator = <T>(model: mongoose.Model<T>) => {
         break;
 
       case "Post":
-        console.log("Request", req)
         let postData = {
           title: body.title,
           topic: body.topic,

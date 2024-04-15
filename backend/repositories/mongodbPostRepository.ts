@@ -8,20 +8,19 @@ export class MongoDbPostRepository implements IPostRepository {
   deletePost(id: string): Promise<any> {
     return this._repo.deleteOne({ _id: new ObjectId(id) });
   }
-  updatePost(id: string, post: Post): Promise<any> {
-    return this._repo.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          title: post.title,
-          textContent: post.textContent,
-          topic: post.topic,
-          type: post.type,
-          author: post.author,
-          imageContent: post.imageContent,
-        },
-      }
-    );
+  updatePost(id: string, post: any): Promise<any> {
+    const propsToUpdate = {
+      $set: {
+        title: post.title,
+        topic: post.topic,
+        author: post.author,
+      },
+    };
+
+    if (post.textContent) propsToUpdate.$set["textContent"] = post.textContent;
+    if (post.imageContent)
+      propsToUpdate.$set["imageContent"] = post.imageContent;
+    return this._repo.updateOne({ _id: new ObjectId(id) }, propsToUpdate);
   }
   async existPostById(id: string): Promise<Boolean> {
     const result = await this._repo.exists({ _id: id });

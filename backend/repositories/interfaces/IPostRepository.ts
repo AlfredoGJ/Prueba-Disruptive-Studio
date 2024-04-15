@@ -12,6 +12,6 @@ export interface IPostRepository {
   ): Promise<Post[]>;
   getAllPosts(): Promise<Post[]>;
   deletePost(id: string): Promise<Boolean>;
-  updatePost(id: string, post: Post): Promise<any>;
+  updatePost(id: string, post: any): Promise<any>;
   existPostById(id: string): Promise<Boolean>;
 }

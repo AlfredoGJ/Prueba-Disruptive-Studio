@@ -1,5 +1,6 @@
 import React from "react";
 import Feed from "../organisms/Feed";
+import FeedPage from "./Feedpage";
 
 interface CreatorProps {
   name?: string;
@@ -8,7 +9,7 @@ interface CreatorProps {
 }
 
 const Creator: React.FC<CreatorProps> = ({ name, age, email }) => {
-  return <Feed />;
+  return <FeedPage />;
 };
 
 export default Creator;

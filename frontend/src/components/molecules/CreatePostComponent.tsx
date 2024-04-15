@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Surface } from "../atoms/Surface/Surface";
 import { Button } from "../atoms";
 import {
@@ -11,6 +11,7 @@ import { Modal } from "./Modal/Modal";
 import { useAPI } from "../../hooks/useAPI";
 import { CreateImageForm } from "./CreateImageForm/CreateImageForm";
 import { CreateVideoForm } from "./CreateVideoUrlForm/CreateVideoUrlForm";
+import { UserContext } from "../../context/UserContext";
 
 interface CreatePostProps {}
 
@@ -29,9 +30,10 @@ const CreatePostComponent: React.FC<CreatePostProps> = ({}) => {
 
   const formRef = React.useRef<HTMLFormElement>(null);
 
+  const[user,] = useContext(UserContext);
+
   useEffect(() => {
     if (responseCreatePost) {
-      console.log(responseCreatePost);
       setCreatePost(PostType.None);
     }
   }, [responseCreatePost, errorCreatePost]);
@@ -46,10 +48,9 @@ const CreatePostComponent: React.FC<CreatePostProps> = ({}) => {
             textContent: formData.get("content"),
             title: formData.get("title"),
             type: "Text",
-            author: "Alfredo",
+            author: user?.name,
           };
 
-          console.log(`Data: ${data}`);
           callCreatePost(data);
           break;
         }
@@ -57,7 +58,7 @@ const CreatePostComponent: React.FC<CreatePostProps> = ({}) => {
           const formData = new FormData(formRef.current);
           let topic = formData.get("topic[name]");
           formData.append("type", "Image");
-          formData.append("author", "Alfredo");
+          formData.append("author", user?.name as string);
           formData.delete("topic[name]");
           formData.delete("topic[id]");
           formData.append("topic", topic as string);
@@ -72,7 +73,7 @@ const CreatePostComponent: React.FC<CreatePostProps> = ({}) => {
             textContent: formData.get("textContent"),
             title: formData.get("title"),
             type: "Video",
-            author: "Alfredo",
+            author: user?.name,
           };
 
           callCreatePost(data);

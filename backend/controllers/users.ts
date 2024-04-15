@@ -18,8 +18,6 @@ export const UsersController = (
   return express
     .Router(options)
     .get("/", async (req: Request, res: Response) => {
-      console.log(options);
-      console.log(usersService);
       const users = await usersService.getAll();
       return HTTP200Ok(res, users);
     })
@@ -55,7 +53,6 @@ export const UsersController = (
       Authx([UserType.ADMIN]),
       async (req: Request, res: Response) => {
         const { id } = req.params;
-        console.log("ID", id);
         const existsUser = await usersService.existUserById(id);
         if (!existsUser)
           return HTTP400BadRequest(res, "Bad Request", "User does not exist");
@@ -71,7 +68,6 @@ export const UsersController = (
       async (req: Request, res: Response) => {
         const { id } = req.params;
         const { user } = req.body;
-        console.log("ID", id);
         const existsUser = await usersService.existUserById(id);
         if (!existsUser)
           return HTTP400BadRequest(res, "Bad Request", "User does not exist");

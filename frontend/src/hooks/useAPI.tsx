@@ -51,6 +51,14 @@ const endpoints = {
     method: "POST",
     url: "/users",
   },
+  updateUser: {
+    method: "PATCH",
+    url: "/users",
+  },
+  deleteUser: {
+    method: "DELETE",
+    url: "/users",
+  },
   getTopicsThatAcceptContent: {
     method: "GET",
     url: "/topics",
@@ -61,6 +69,14 @@ const endpoints = {
   },
   getPosts: {
     method: "GET",
+    url: "/posts",
+  },
+  updatePost: {
+    method: "PATCH",
+    url: "/posts",
+  },
+  deletePost: {
+    method: "DELETE",
     url: "/posts",
   },
   getPostsSummary: {
@@ -92,7 +108,6 @@ export const useAPI = ({ endpoint, useAuth }: IUseAPIProps) => {
     queryParams: [Record<string, string>]
   ) => {
     setLoading(true);
-    console.log("Calling API:", endpoint, data, params, queryParams);
     try {
       const { method, url } = endpoints[endpoint];
       const res = await axios({
@@ -107,11 +122,9 @@ export const useAPI = ({ endpoint, useAuth }: IUseAPIProps) => {
         },
       });
 
-      console.log("Response:", res);
       setResponse(res);
     } catch (err: any) {
       setError(err.response.data);
-      console.log("Error:", err);
     } finally {
       setLoading(false);
     }

@@ -6,22 +6,25 @@ import { useAPI } from "../../../hooks/useAPI";
 import { ContentType, Option, UserType } from "../../../types/types";
 import { Console } from "console";
 import FileUpload from "../../atoms/FileUpload/FileUpload";
+import { User } from "../../../types/types";
 
-interface UsersFormProps extends React.HTMLProps<HTMLFormElement> {}
+interface UsersFormProps extends React.HTMLProps<HTMLFormElement> {
+  initialUser?: User;
+}
 
 export const UserForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
-  ({ onSubmit }, ref) => {
+  ({ onSubmit, initialUser }, ref) => {
     const userTypes: UserType[] = [
       UserType.ADMIN,
       UserType.VIEWER,
       UserType.CREATOR,
     ];
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    const [name, setName] = useState(initialUser?.name || "");
+    const [email, setEmail] = useState(initialUser?.email || "");
     const [userType, setUserType] = useState<Option>({
-      id: UserType.VIEWER,
-      name: UserType.VIEWER,
+      id: initialUser?.type || UserType.VIEWER,
+      name: initialUser?.type || UserType.VIEWER,
     });
 
     function handleNameChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -33,7 +36,6 @@ export const UserForm = React.forwardRef<HTMLFormElement, UsersFormProps>(
     }
 
     function handleUserTypeChange(newUsertype: Option) {
-      console.log("USERTYPE:", newUsertype);
       setUserType(newUsertype);
     }
 

@@ -6,13 +6,13 @@ import { Button } from "../atoms";
 import { Modal } from "../molecules/Modal/Modal";
 import { UserForm } from "../molecules/UserForm/UserForm";
 
-interface UsersAdminProps {
-  // Define your props here
-}
+interface UsersAdminProps {}
 
 const UsersAdmin: React.FC<UsersAdminProps> = (props) => {
   const [users, setUsers] = React.useState<User[]>([]);
+  const [tempUser, setTempUser] = React.useState<User | undefined>();
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [call, , response, error] = useAPI({
     endpoint: "getUsers",
     useAuth: true,
@@ -23,6 +23,15 @@ const UsersAdmin: React.FC<UsersAdminProps> = (props) => {
     useAuth: true,
   });
 
+  const [callUpdateUser, , responseUpdateUser, errorUpdateUser] = useAPI({
+    endpoint: "updateUser",
+    useAuth: true,
+  });
+
+  const [callDeleteUser, , responseDeleteUser, errorDeleteUser] = useAPI({
+    endpoint: "deleteUser",
+    useAuth: true,
+  });
   const formRef = React.useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -34,11 +43,18 @@ const UsersAdmin: React.FC<UsersAdminProps> = (props) => {
   }, [response]);
 
   useEffect(() => {
-    if (responseCreateUser) {
+    if (responseCreateUser || responseUpdateUser || responseDeleteUser) {
       call("");
       setDialogOpen(false);
+      setDeleteDialogOpen(false);
     }
-  }, [responseCreateUser, errorCreateUser]);
+  }, [
+    responseCreateUser,
+    errorCreateUser,
+    responseUpdateUser,
+    errorUpdateUser,
+    responseDeleteUser
+  ]);
 
   function handleAddUser() {
     if (formRef.current) {
@@ -48,14 +64,47 @@ const UsersAdmin: React.FC<UsersAdminProps> = (props) => {
         name: formData.get("name"),
         type: formData.get("type[name]"),
       };
-      callCreateUser(data);
+
+      if (tempUser) {
+        callUpdateUser(data, tempUser._id);
+        setTempUser(undefined);
+      } else callCreateUser(data);
     }
+  }
+
+  function handleDeleteClick(user: User) {
+    setTempUser(user);
+    setDeleteDialogOpen(true);
+  }
+
+  function handleUpdateClick(user: User) {
+    setDialogOpen(true);
+    setTempUser(user);
+  }
+
+  function handleContentTypeDelete() {
+    callDeleteUser("",tempUser?._id);
+    setTempUser(undefined)
+  }
+
+  function handleDeleteModalSecondaryAction() {
+    setDeleteDialogOpen(false);
+    setTempUser(undefined);
+  }
+
+  function handleAddUserSecondaryAction() {
+    setDialogOpen(false);
+    setTempUser(undefined);
   }
 
   return (
     <div className="p-2">
       {users.map((user) => (
-        <UserItem user={user} />
+        <UserItem
+          user={user}
+          onDeleteClick={handleDeleteClick}
+          onEditClick={handleUpdateClick}
+        />
       ))}
       <div className=" flex justify-end pt-2">
         <Button onClick={() => setDialogOpen(true)}>Add User</Button>
@@ -64,15 +113,25 @@ const UsersAdmin: React.FC<UsersAdminProps> = (props) => {
         title="Add User"
         onClose={() => {}}
         open={dialogOpen}
-        mainActionText="Add"
+        mainActionText="Save"
         secondaryActionText="Cancel"
         handleMainAction={handleAddUser}
-        handleSecondaryAction={() => setDialogOpen(false)}
+        handleSecondaryAction={handleAddUserSecondaryAction}
       >
-        <UserForm ref={formRef} />
+        <UserForm ref={formRef} initialUser={tempUser} />
         {errorCreateUser && (
           <p className="text-red-500 mt-2">{errorCreateUser.message}</p>
         )}
+      </Modal>
+      <Modal
+        open={deleteDialogOpen}
+        title="Delete User"
+        mainActionText="Confirm"
+        secondaryActionText="Cancel"
+        handleMainAction={handleContentTypeDelete}
+        handleSecondaryAction={handleDeleteModalSecondaryAction}
+      >
+        <p>Are you sure you want to delete this user?</p>
       </Modal>
     </div>
   );

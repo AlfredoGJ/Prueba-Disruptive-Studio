@@ -10,9 +10,10 @@ import { modelValidator } from "middleware/validation";
 import postScheema from "infra/db/scheemas/Post";
 import multer = require("multer");
 import { Authx } from "middleware/AuthX";
-import { UserType } from "domain/models";
+import { Post, UserType } from "domain/models";
 import { IPostRepository } from "repositories/interfaces/IPostRepository";
 import { group } from "console";
+import { validContentTypes } from "domain/models/contentType";
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 export const PostsController = (
@@ -29,9 +30,7 @@ export const PostsController = (
       async (req: Request & { user }, res: Response) => {
         const { post } = req.body;
         console.error("I Entered the controller :S");
-        console.log("POST", post);
         // const existTopic = await topicsRepository.existTopic(topic.name);
-        console.log("USER", req.user);
 
         postsRepository.createPost(post);
         return HTTP201Created(res, post);
@@ -79,7 +78,6 @@ export const PostsController = (
       Authx([UserType.ADMIN]),
       async (req: Request, res: Response) => {
         const { id } = req.params;
-        console.log("ID", id);
         const existsPost = await postsRepository.existPostById(id);
         if (!existsPost)
           return HTTP400BadRequest(res, "Bad Request", "Post does not exist");
@@ -92,11 +90,22 @@ export const PostsController = (
       "/:id",
       Authx([UserType.ADMIN]),
       upload.single("imageContent"),
-      modelValidator(postScheema),
-      async (req: Request, res: Response) => {
+      async (
+        req: Request & { file: { data: Buffer; mimetype: string } },
+        res: Response
+      ) => {
         const { id } = req.params;
-        const { post } = req.body;
-        console.log("ID", id);
+        const { topic, textContent, title, author, type } = req.body;
+        const { file } = req;
+        const post = {
+          topic,
+          textContent,
+          title,
+          author,
+          type,
+          imageContent: file ? file : "",
+        };
+
         const existsPost = await postsRepository.existPostById(id);
         if (!existsPost)
           return HTTP400BadRequest(res, "Bad Request", "Post does not exist");

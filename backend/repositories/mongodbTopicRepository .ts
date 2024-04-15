@@ -54,7 +54,6 @@ export class MongoDbTopicRepository implements ITopicRepository {
   getTopicsThatAcceptsContent(contentType: string): Promise<Topic[]> {
     // return this._repo.find({ allowedContent: contentType }, { cover: 0 });
 
-    console.log("CONTENT TYPE", contentType);
     return this._repo
       .aggregate([
         {

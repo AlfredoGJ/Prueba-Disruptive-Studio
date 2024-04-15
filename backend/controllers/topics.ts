@@ -53,7 +53,6 @@ export const TopicsController = (
         const { topic } = req.body;
         console.error("I Entered the controller :S");
         const existTopic = await topicsRepository.existTopicByName(topic.name);
-        console.log("USER", req.user);
         if (existTopic)
           return HTTP400BadRequest(res, "Bad Request", "Topic already exists");
 
@@ -66,7 +65,6 @@ export const TopicsController = (
       Authx([UserType.ADMIN]),
       async (req: Request, res: Response) => {
         const { id } = req.params;
-        console.log("ID", id);
         const existsTopic = await topicsRepository.existTopicById(id);
         if (!existsTopic)
           return HTTP400BadRequest(
@@ -91,7 +89,6 @@ export const TopicsController = (
         const { name, allowedContent } = req.body;
         const { file } = req;
 
-        console.log("ID", id);
         const existsTopic = await topicsRepository.existTopicById(id);
         if (!existsTopic)
           return HTTP400BadRequest(
@@ -105,11 +102,9 @@ export const TopicsController = (
           allowedContent,
           cover: null,
         };
-        console.log("DATA", data);
         if (file) {
           data.cover = { data: file.buffer, contentType: file.mimetype };
         }
-        console.log("DATA", data);
         await topicsRepository.updateTopic(id, data);
         return HTTP200Ok(res, "Content type deleted succesfully");
       }

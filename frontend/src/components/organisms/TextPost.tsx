@@ -4,11 +4,21 @@ import BasePost from "./BasePost";
 
 interface ImagePostProps {
   post: Post;
+  onDeleteClick: (post: Post) => void;
+  onEditClick: (post: Post) => void;
 }
 
-const TextPost: React.FC<ImagePostProps> = ({ post }) => {
+const TextPost: React.FC<ImagePostProps> = ({
+  post,
+  onDeleteClick,
+  onEditClick,
+}) => {
   return (
-    <BasePost post={post}>
+    <BasePost
+      post={post}
+      onDeleteClick={onDeleteClick}
+      onEditClick={onEditClick}
+    >
       <div>{post.textContent}</div>
     </BasePost>
   );

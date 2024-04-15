@@ -30,7 +30,6 @@ export const ContentTypeController = (
         const { contentType } = req.body;
         const existsContentType =
           await contentTypeRepository.existContentTypeByName(contentType.name);
-        console.log("USER", req.user);
         if (existsContentType)
           return HTTP400BadRequest(
             res,
@@ -47,7 +46,6 @@ export const ContentTypeController = (
       Authx([UserType.ADMIN]),
       async (req: Request, res: Response) => {
         const { id } = req.params;
-        console.log("ID", id);
         const existsContentType =
           await contentTypeRepository.existContentTypeById(id);
         if (!existsContentType)
@@ -68,7 +66,6 @@ export const ContentTypeController = (
       async (req: Request, res: Response) => {
         const { id } = req.params;
         const { contentType } = req.body;
-        console.log("ID", id);
         const existsContentType =
           await contentTypeRepository.existContentTypeById(id);
         if (!existsContentType)

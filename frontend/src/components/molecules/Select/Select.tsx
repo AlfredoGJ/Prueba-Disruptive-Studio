@@ -18,7 +18,6 @@ export const Select = ({
   onChange,
   multiple,
 }: ListBoxProps) => {
-  console.log("VALUE RECEIVED:", value);
   return (
     <div className="top-16 w-auto ">
       <Listbox
